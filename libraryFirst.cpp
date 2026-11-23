@@ -1,19 +1,55 @@
 #include <iostream>
 
 //attributes of book in struct
+const int genresCount = 5;
+const int bookPerGenre = 10;
+
 struct Book {
-    std::string title;
-    std::string author;
+    std::string title, author;
     int isbn;
     bool isBarrowed;
 };
 
+const std::string genreNames[genresCount] = {
+    "Romance",
+    "Mystery",
+    "Fantasy",
+    "Science Fiction",
+    "Horror"
+};
+
 void displayMenu();
 int getInt(const std::string& prompt, int min, int max);
+void sampleBook(Book catalog[genresCount][bookPerGenre]);
+void displayCatalog(Book catalog[genresCount][bookPerGenre]);
 
 int main(){
+    Book catalog[genresCount][bookPerGenre] = {};
+    sampleBook(catalog);
     displayMenu();
     int choice = getInt("Enter choice: ", 0, 3);
+
+    switch (choice)
+    {
+        case 1:
+            displayCatalog(catalog); //ayaw gumana HAWAHAHA
+            break;
+        case 2:
+            /* code */
+            break;
+        case 3:
+        /* code */
+        break;
+        default:
+            break;
+    }
+}
+
+void sampleBook(Book catalog[genresCount][bookPerGenre]){
+    catalog[0][0] = {"title1", "author1", 1, false};
+    catalog[0][1] = {"title2", "author2", 2, false};
+    catalog[0][3] = {"title3", "author3", 3, false};
+    
 }
 
 void displayMenu(){
@@ -41,6 +77,17 @@ int getInt(const std::string& prompt, int min, int max){
     }
 }
 
+
+void displayCatalog(Book catalog[genresCount][bookPerGenre]){
+    for(int i = 0; i < genresCount; i++){
+        std::cout << genreNames[i] << std::endl;
+        for(int j = 0; j < bookPerGenre; j++){
+            std::cout << "Title: " << catalog[i][j].title << std::endl;
+            std::cout << "author: " << catalog[i][j].author << std::endl;
+            std::cout << "ISBN: " << catalog[i][j].isbn << std::endl;
+        }
+    }
+}
 /*required feature: 
     2d book storation - by shelves and 5 slot per shelves
     checking out function 
