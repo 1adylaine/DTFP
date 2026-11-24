@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 
 //attributes of book in struct
 const int genresCount = 5;
@@ -58,7 +59,32 @@ int main(){
 void sampleBook(Book catalog[genresCount][bookPerGenre]){
     catalog[0][0] = {"title1", "author1", 1, false};
     catalog[0][1] = {"title2", "author2", 2, false};
-    catalog[0][3] = {"title3", "author3", 3, false};
+    catalog[0][3] = {"title4", "author4", 4, false};
+    catalog[0][4] = {"title5", "author5", 5, false};
+
+    catalog[1][0] = {"title6", "author1", 1, false};
+    catalog[1][1] = {"title7", "author2", 2, false};
+    catalog[1][2] = {"title8", "author3", 3, false};
+    catalog[1][3] = {"title9", "author4", 4, false};
+    catalog[1][4] = {"title10", "author5", 5, false};
+
+    catalog[2][0] = {"title11", "author1", 1, false};
+    catalog[2][1] = {"title12", "author2", 2, false};
+    catalog[2][2] = {"title13", "author3", 3, false};
+    catalog[2][3] = {"title14", "author4", 4, false};
+    catalog[2][4] = {"title15", "author5", 5, false};
+
+    catalog[3][0] = {"title16", "author1", 1, false};
+    catalog[3][1] = {"title17", "author2", 2, false};
+    catalog[3][2] = {"title18", "author3", 3, false};
+    catalog[3][3] = {"title19", "author4", 4, false};
+    catalog[3][4] = {"title20", "author5", 5, false};
+
+    catalog[4][0] = {"title21", "author1", 1, false};
+    catalog[4][1] = {"title22", "author2", 2, false};
+    catalog[4][2] = {"title23", "author3", 3, false};
+    catalog[4][3] = {"title24", "author4", 4, false};
+    catalog[4][4] = {"title25", "author5", 5, false};
 }
 
 void displayMenu(){
@@ -85,17 +111,35 @@ int getInt(const std::string& prompt) {
 
 
 void displayCatalog(Book catalog[genresCount][bookPerGenre]){
-
     // ginawa kong mas organize na stress ako mag debug AHAHAHHAHAHHA
+    const int lineWidth = 80;
+    const int titleW = 26, authorW = 18, isbnW = 12, statusW = 11;
     for(int i = 0; i < genresCount; i++){
-        std::cout << genreNames[i] << std::endl;
+        int inner = lineWidth - 2;
+        int space = inner - genreNames[i].length();
+        int left = space / 2;
+        int right = space - left;
+        
+        std::cout << std::string(lineWidth, '=') << "\n";
+        std::cout << "|" << std::string(left, ' ') << genreNames[i] << std::string(right, ' ') << "|\n";
+        std::cout << std::string(lineWidth, '=') << "\n";
+
+        std::cout << std::left
+            << "| " << std::setw(titleW)  << "Title"
+            << " | " << std::setw(authorW) << "Author"
+            << " | " << std::setw(isbnW)   << "ISBN"
+            << " | " << std::setw(statusW) << "Status" << " |\n";
+        std::cout << std::string(lineWidth, '-') << "\n";
         for(int j = 0; j < bookPerGenre; j++){
-           std::cout << "Title: " << catalog[i][j].title
-                     << " | Author: " << catalog[i][j].author
-                     << " | ISBN: " << catalog[i][j].isbn
-                     << " | " << (catalog[i][j].isBarrowed ?  "[BORROWED]" : "[AVAILABLE]")
-                     << " |" << std::endl;
+            if (catalog[i][j].title.empty()) continue;
+            std::cout << std::left
+                << "| " << std::setw(titleW)  << catalog[i][j].title
+                << " | " << std::setw(authorW) << catalog[i][j].author
+                << " | " << std::setw(isbnW)   << catalog[i][j].isbn
+                << " | " << std::setw(statusW) << (catalog[i][j].isBarrowed ? "[BORROWED]" : "[AVAILABLE]")
+                << " |\n";
         }
+        std::cout << std::string(lineWidth, '-') << "\n\n";
     }
 }
 
@@ -142,4 +186,8 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre]){
     with attributes like title, author, and ISBN. 
     Use a 2D array to store multiple books and 
     implement functions for checking out and returning books. 
+*/
+
+/*Checkings:
+    check runtime
 */
