@@ -20,7 +20,7 @@ const std::string genreNames[genresCount] = {
 };
 
 void displayMenu();
-int getInt(const std::string& prompt, int min, int max);
+int getInt(const std::string& prompt);
 void sampleBook(Book catalog[genresCount][bookPerGenre]);
 void displayCatalog(Book catalog[genresCount][bookPerGenre]);
 void checkOutBook(Book catalog[genresCount][bookPerGenre]);
@@ -28,10 +28,10 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre]);
 int main(){
     Book catalog[genresCount][bookPerGenre] = {};
     sampleBook(catalog);
-   int choice;
+    int choice;
     do {
         displayMenu();
-        choice = getInt("Enter choice: ", 0, 3);
+        choice = getInt("Enter choice: ");
         switch (choice) {
             case 1:
                 displayCatalog(catalog);
@@ -47,26 +47,12 @@ int main(){
             case 0:
                 std::cout << "Exiting program...\n";
                 break;
+            default:
+                std::cout << "Invalid choice. Range 0 - 3 only. Try again.\n";
+                break;
         }
 
     } while (choice != 0);
-    displayMenu();
-    int choice = getInt("Enter choice: ", 0, 3);
-
-    switch (choice)
-    {
-        case 1:
-            displayCatalog(catalog); 
-            break;
-        case 2:
-            /* code */
-            break;
-        case 3:
-        /* code */
-        break;
-        default:
-            break;
-    }
 }
 
 void sampleBook(Book catalog[genresCount][bookPerGenre]){
@@ -83,20 +69,17 @@ void displayMenu(){
     std::cout << " [0] Exit\n";
 }
 
-int getInt(const std::string& prompt, int min, int max){
+int getInt(const std::string& prompt) {
     int num;
-    while(true) {
+    while (true) {
         std::cout << prompt;
-        if(std::cin >> num){
-            std::cin.ignore();
-            if(num >= min && num <= max) return num;
-            std::cout << "Enter " << min << " to " << max << " only.\n";
+        if (std::cin >> num) {
+            std::cin.ignore(1000, '\n');
+            return num;
         }
-        else {
-            std::cin.clear();
-            std::cin.ignore();
-            std::cout << "Invalid input! Try again.\n";
-        }
+        std::cin.clear();
+        std::cin.ignore(1000, '\n');
+        std::cout << "Invalid! Try again.\n";
     }
 }
 
@@ -112,20 +95,12 @@ void displayCatalog(Book catalog[genresCount][bookPerGenre]){
                      << " | ISBN: " << catalog[i][j].isbn
                      << " | " << (catalog[i][j].isBarrowed ?  "[BORROWED]" : "[AVAILABLE]")
                      << " |" << std::endl;
-    for(int i = 0; i < 1; i++){
-        std::cout << genreNames[i] << std::endl;
-        std::cout << "Title | Author | ISBN " << std::endl;
-        for(int j = 0; j < 3; j++){
-            std::cout << catalog[i][j].title << " | " << catalog[i][j].author << " | " << catalog[i][j].isbn << std::endl;
         }
-        std::cout<<std::endl;
     }
 }
 
-void checkOutBook(Book catalog[genresCount][bookPerGenre]) {
-    int isbn;
-    std::cout << "Enter ISBN of book to check out: ";
-    std::cin >> isbn;
+void checkOutBook(Book catalog[genresCount][bookPerGenre]){
+    int isbn = getInt("Enter ISBN of book to check out: ");
 
     for (int i = 0; i < genresCount; i++) {
         for (int j = 0; j < bookPerGenre; j++) {
