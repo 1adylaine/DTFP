@@ -23,10 +23,33 @@ void displayMenu();
 int getInt(const std::string& prompt, int min, int max);
 void sampleBook(Book catalog[genresCount][bookPerGenre]);
 void displayCatalog(Book catalog[genresCount][bookPerGenre]);
+void checkOutBook(Book catalog[genresCount][bookPerGenre]);
 
 int main(){
     Book catalog[genresCount][bookPerGenre] = {};
     sampleBook(catalog);
+   int choice;
+    do {
+        displayMenu();
+        choice = getInt("Enter choice: ", 0, 3);
+        switch (choice) {
+            case 1:
+                displayCatalog(catalog);
+                std::cout << "\nPress Enter to return to menu...";
+                std::cin.get();
+                break;
+            case 2:
+                checkOutBook(catalog);
+                break;
+            case 3:
+                /*code*/
+                break;
+            case 0:
+                std::cout << "Exiting program...\n";
+                break;
+        }
+
+    } while (choice != 0);
     displayMenu();
     int choice = getInt("Enter choice: ", 0, 3);
 
@@ -79,13 +102,49 @@ int getInt(const std::string& prompt, int min, int max){
 
 
 void displayCatalog(Book catalog[genresCount][bookPerGenre]){
+
+    // ginawa kong mas organize na stress ako mag debug AHAHAHHAHAHHA
+    for(int i = 0; i < genresCount; i++){
+        std::cout << genreNames[i] << std::endl;
+        for(int j = 0; j < bookPerGenre; j++){
+           std::cout << "Title: " << catalog[i][j].title
+                     << " | Author: " << catalog[i][j].author
+                     << " | ISBN: " << catalog[i][j].isbn
+                     << " | " << (catalog[i][j].isBarrowed ?  "[BORROWED]" : "[AVAILABLE]")
+                     << " |" << std::endl;
     for(int i = 0; i < 1; i++){
         std::cout << genreNames[i] << std::endl;
         std::cout << "Title | Author | ISBN " << std::endl;
         for(int j = 0; j < 3; j++){
             std::cout << catalog[i][j].title << " | " << catalog[i][j].author << " | " << catalog[i][j].isbn << std::endl;
         }
+        std::cout<<std::endl;
     }
+}
+
+void checkOutBook(Book catalog[genresCount][bookPerGenre]) {
+    int isbn;
+    std::cout << "Enter ISBN of book to check out: ";
+    std::cin >> isbn;
+
+    for (int i = 0; i < genresCount; i++) {
+        for (int j = 0; j < bookPerGenre; j++) {
+
+            if (catalog[i][j].isbn == isbn) {
+
+                if (catalog[i][j].isBarrowed) {
+                    std::cout << "Book is already borrowed.\n";
+                } else {
+                    catalog[i][j].isBarrowed = true;
+                    std::cout << "Book checked out successfully.\n";
+                }
+
+                return;
+            }
+        }
+    }
+
+    std::cout << "Book not found.\n";
 }
 //left on sample display.. to be continued iomanip for display.
 
