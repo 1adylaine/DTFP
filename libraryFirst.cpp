@@ -10,6 +10,7 @@ struct Book {
     bool isBarrowed;
 };
 
+//
 const std::string genreNames[genresCount] = {
     "Romance",
     "Mystery",
@@ -49,13 +50,29 @@ int main(){
         }
 
     } while (choice != 0);
+    displayMenu();
+    int choice = getInt("Enter choice: ", 0, 3);
+
+    switch (choice)
+    {
+        case 1:
+            displayCatalog(catalog); 
+            break;
+        case 2:
+            /* code */
+            break;
+        case 3:
+        /* code */
+        break;
+        default:
+            break;
+    }
 }
 
 void sampleBook(Book catalog[genresCount][bookPerGenre]){
     catalog[0][0] = {"title1", "author1", 1, false};
     catalog[0][1] = {"title2", "author2", 2, false};
     catalog[0][3] = {"title3", "author3", 3, false};
-    
 }
 
 void displayMenu(){
@@ -95,6 +112,11 @@ void displayCatalog(Book catalog[genresCount][bookPerGenre]){
                      << " | ISBN: " << catalog[i][j].isbn
                      << " | " << (catalog[i][j].isBarrowed ?  "[BORROWED]" : "[AVAILABLE]")
                      << " |" << std::endl;
+    for(int i = 0; i < 1; i++){
+        std::cout << genreNames[i] << std::endl;
+        std::cout << "Title | Author | ISBN " << std::endl;
+        for(int j = 0; j < 3; j++){
+            std::cout << catalog[i][j].title << " | " << catalog[i][j].author << " | " << catalog[i][j].isbn << std::endl;
         }
         std::cout<<std::endl;
     }
@@ -124,6 +146,7 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre]) {
 
     std::cout << "Book not found.\n";
 }
+//left on sample display.. to be continued iomanip for display.
 
 /*required feature: 
     2d book storation - by shelves and 5 slot per shelves
