@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <vector>
 
 //attributes of book in struct
 const int genresCount = 5;
@@ -24,10 +25,13 @@ void displayMenu();
 int getInt(const std::string& prompt);
 void sampleBook(Book catalog[genresCount][bookPerGenre]);
 void displayCatalog(Book catalog[genresCount][bookPerGenre]);
-void checkOutBook(Book catalog[genresCount][bookPerGenre]);
+void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<Book>& barrowedBook);
+void returnBook(std::vector<Book>& barrowedBook, Book catalog[genresCount][bookPerGenre]);
 
 int main(){
     Book catalog[genresCount][bookPerGenre] = {};
+    std::vector<Book> barrowedBooks;
+
     sampleBook(catalog);
     int choice;
     do {
@@ -40,10 +44,10 @@ int main(){
                 std::cin.get();
                 break;
             case 2:
-                checkOutBook(catalog);
+                checkOutBook(catalog, barrowedBooks);
                 break;
             case 3:
-                /*code*/
+                returnBook(barrowedBooks, catalog);
                 break;
             case 0:
                 std::cout << "Exiting program...\n";
@@ -62,29 +66,29 @@ void sampleBook(Book catalog[genresCount][bookPerGenre]){
     catalog[0][3] = {"title4", "author4", 4, false};
     catalog[0][4] = {"title5", "author5", 5, false};
 
-    catalog[1][0] = {"title6", "author1", 1, false};
-    catalog[1][1] = {"title7", "author2", 2, false};
-    catalog[1][2] = {"title8", "author3", 3, false};
-    catalog[1][3] = {"title9", "author4", 4, false};
-    catalog[1][4] = {"title10", "author5", 5, false};
+    catalog[1][0] = {"title6", "author1", 6, false};
+    catalog[1][1] = {"title7", "author2", 7, false};
+    catalog[1][2] = {"title8", "author3", 8, false};
+    catalog[1][3] = {"title9", "author4", 9, false};
+    catalog[1][4] = {"title10", "author5", 10, false};
 
-    catalog[2][0] = {"title11", "author1", 1, false};
-    catalog[2][1] = {"title12", "author2", 2, false};
-    catalog[2][2] = {"title13", "author3", 3, false};
-    catalog[2][3] = {"title14", "author4", 4, false};
-    catalog[2][4] = {"title15", "author5", 5, false};
+    catalog[2][0] = {"title11", "author1", 11, false};
+    catalog[2][1] = {"title12", "author2", 12, false};
+    catalog[2][2] = {"title13", "author3", 13, false};
+    catalog[2][3] = {"title14", "author4", 14, false};
+    catalog[2][4] = {"title15", "author5", 15, false};
 
-    catalog[3][0] = {"title16", "author1", 1, false};
-    catalog[3][1] = {"title17", "author2", 2, false};
-    catalog[3][2] = {"title18", "author3", 3, false};
-    catalog[3][3] = {"title19", "author4", 4, false};
-    catalog[3][4] = {"title20", "author5", 5, false};
+    catalog[3][0] = {"title16", "author1", 16, false};
+    catalog[3][1] = {"title17", "author2", 17, false};
+    catalog[3][2] = {"title18", "author3", 18, false};
+    catalog[3][3] = {"title19", "author4", 19, false};
+    catalog[3][4] = {"title20", "author5", 20, false};
 
-    catalog[4][0] = {"title21", "author1", 1, false};
-    catalog[4][1] = {"title22", "author2", 2, false};
-    catalog[4][2] = {"title23", "author3", 3, false};
-    catalog[4][3] = {"title24", "author4", 4, false};
-    catalog[4][4] = {"title25", "author5", 5, false};
+    catalog[4][0] = {"title21", "author1", 21, false};
+    catalog[4][1] = {"title22", "author2", 22, false};
+    catalog[4][2] = {"title23", "author3", 23, false};
+    catalog[4][3] = {"title24", "author4", 24, false};
+    catalog[4][4] = {"title25", "author5", 25, false};
 }
 
 void displayMenu(){
@@ -143,7 +147,7 @@ void displayCatalog(Book catalog[genresCount][bookPerGenre]){
     }
 }
 
-void checkOutBook(Book catalog[genresCount][bookPerGenre]){
+void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<Book>& barrowedBook){
     int isbn = getInt("Enter ISBN of book to check out: ");
 
     for (int i = 0; i < genresCount; i++) {
@@ -156,6 +160,7 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre]){
                 } else {
                     catalog[i][j].isBarrowed = true;
                     std::cout << "Book checked out successfully.\n";
+                    barrowedBook.push_back(catalog[i][j]);
                 }
 
                 return;
@@ -165,7 +170,36 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre]){
 
     std::cout << "Book not found.\n";
 }
-//left on sample display.. to be continued iomanip for display.
+
+void returnBook(std::vector<Book>& barrowedBook, Book catalog[genresCount][bookPerGenre]){
+    const int titleW = 26, authorW = 18, isbnW = 12, statusW = 11;
+
+    for(const auto b : barrowedBook){
+        std::cout << std::left
+            << "| " << std::setw(titleW)  << b.title
+            << " | " << std::setw(authorW) << b.author
+            << " | " << std::setw(isbnW)   << b.isbn
+            << " | " << std::setw(statusW) << b.isBarrowed << " |\n";
+    }
+
+    int isbn = getInt("Enter the ISBN of book you want to return: ");
+
+    for (int i = 0; i < genresCount; i++) {
+        for (int j = 0; j < bookPerGenre; j++) {
+            if (catalog[i][j].isbn == isbn) {
+                catalog[i][j].isBarrowed = false;
+                std::cout << "Book returned\n\n";
+                for (auto it = barrowedBook.begin(); it != barrowedBook.end(); ++it) {
+                    if (it->isbn == isbn) {
+                        barrowedBook.erase(it);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+//left on MVP of return function, no edge cases yet and uses vector.
 
 /*required feature: 
     2d book storation - by shelves and 5 slot per shelves
