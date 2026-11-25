@@ -280,8 +280,12 @@ void returnBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user
                 int nextUser = book->waitingList.front();
                 book->waitingList.pop();
 
+                int userIndex = findUser(user, nextUser);
                 std::cout << "Book returned.\n";
                 std::cout << "Book reserved for User ID: " << nextUser << std::endl;
+                user[userIndex].barrowed[user[userIndex].count] = isbn;
+                user[userIndex].count++;
+                return;
             }
             else {
                 book->isBarrowed = false;
