@@ -32,18 +32,14 @@ void displayMenu();
 int getInt(const std::string& prompt);
 void sampleBook(Book catalog[genresCount][bookPerGenre]);
 void displayCatalog(Book catalog[genresCount][bookPerGenre]);
-
-bool verifyUser(const User& user, int id);
-
 Book* findBook(Book catalog[genresCount][bookPerGenre], int isbn);
-
-void checkOutBook(Book catalog[genresCount][bookPerGenre], User& user);
+int findUser(const std::vector<User>& user, int id);
+void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user);
 void returnBook(Book catalog[genresCount][bookPerGenre], User& user);
 
 int main(){
     Book catalog[genresCount][bookPerGenre] = {};
-    User user = {101, {0, 0, 0}, 0};
-    std::vector<Book> barrowedBooks;
+    std::vector<User> users;
 
     sampleBook(catalog);
     int choice;
@@ -59,11 +55,10 @@ int main(){
             case 2:
                 std::system("clear");
                 displayCatalog(catalog);
-                checkOutBook(catalog, user);
+                checkOutBook(catalog, users);
                 break;
             case 3:
                 std::system("clear");
-                returnBook(catalog, user);
                 break;
             case 0:
                 std::cout << "Exiting program...\n";
@@ -162,15 +157,6 @@ void displayCatalog(Book catalog[genresCount][bookPerGenre]){
     }
 }
 
-bool verifyUser(const User& user, const std::string& prompt){
-    int id = getInt(prompt);
-    if(id != user.id) {
-        std::cout << "User not found.\n";
-        return false;
-    }
-    return true;
-}
-
 Book* findBook(Book catalog[genresCount][bookPerGenre], int isbn){
     if(isbn == 0) return nullptr;
     for (int i = 0; i < genresCount; i++){
@@ -183,10 +169,36 @@ Book* findBook(Book catalog[genresCount][bookPerGenre], int isbn){
     return nullptr;
 }
 
-void checkOutBook(Book catalog[genresCount][bookPerGenre], User& user){
-    if(!verifyUser(user, "Enter user ID to check out book: ")) return;
+int findUser(const std::vector<User>& user, int id){
+    for(int i = 0; i < user.size(); i++){
+        if(id == user[i].id){
+            return i;
+        }
+    }
+    return -1;
+}
 
-    if(user.count >= 3){
+void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user){
+    int userId = getInt("Enter user ID to borrow a book: ");
+    int userIndex = findUser(user, userId);
+
+    if(userIndex == -1){
+        int isbn = getInt("Enter ISBN of book to check out: ");
+        Book* book = findBook(catalog, isbn);
+        if(book == nullptr){
+        std::cout << "Book not found.\n";
+        }
+        else if(book->isBarrowed){
+            std::cout << "Book is already barrowed.\n";
+        }
+        else {
+            book->isBarrowed = true;
+            std::cout << "Book checked out successfully.\n";
+            user.push_back({userId, {isbn, 0, 0}, 1});
+        }
+    }
+
+    if(user[userIndex].count >= 3){
         std::cout << "Limit reached. Return a book first.\n";
         return;
     }
@@ -202,14 +214,13 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre], User& user){
     }
     else {
         book->isBarrowed = true;
-        user.barrowed[user.count] = isbn;
-        user.count++;
+        user[userIndex].barrowed[user[userIndex].count] = isbn;
+        user[userIndex].count++;
         std::cout << "Book checked out successfully.\n";
     }
 }
 
 void returnBook(Book catalog[genresCount][bookPerGenre], User& user){
-    if(!verifyUser(user, "Enter user ID to return book: ")) return;
 
     std::cout << "Borrowed Books ISBN code: \n";
     for(int i = 0; i < user.count; i++){
