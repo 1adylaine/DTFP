@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <vector>
 #include <cstdlib>
+#include <queue>
 
 //attributes of book in struct
 const int genresCount = 5;
@@ -11,6 +12,8 @@ struct Book {
     std::string title, author;
     int isbn;
     bool isBarrowed;
+
+    std::queue<int> waitingList;
 };
 
 struct User {
@@ -73,34 +76,35 @@ int main(){
 }
 
 void sampleBook(Book catalog[genresCount][bookPerGenre]){
-    catalog[0][0] = {"title1", "author1", 1, false};
-    catalog[0][1] = {"title2", "author2", 2, false};
-    catalog[0][3] = {"title4", "author4", 4, false};
-    catalog[0][4] = {"title5", "author5", 5, false};
+    catalog[0][0] = {"The Notebook", "Nicholas Sparks", 1, false};
+    catalog[0][1] = {"It Ends with Us", "Colleen Hoover", 2, false};
+    catalog[0][2] = {"Me Before You", "Jojo Moyes", 3, false};
+    catalog[0][3] = {"The Fault in Our Stars", "John Green", 4, false};
+    catalog[0][4] = {"After", "Anna Todd", 5, false};
 
-    catalog[1][0] = {"title6", "author1", 6, false};
-    catalog[1][1] = {"title7", "author2", 7, false};
-    catalog[1][2] = {"title8", "author3", 8, false};
-    catalog[1][3] = {"title9", "author4", 9, false};
-    catalog[1][4] = {"title10", "author5", 10, false};
+    catalog[1][0] = {"Dracula", "Bram Stoker", 6, false};
+    catalog[1][1] = {"Frankenstein", "Mary Shelley", 7, false};
+    catalog[1][2] = {"Carrie", "Stephen King", 8, false};
+    catalog[1][3] = {"It", "Stephen King", 9, false};
+    catalog[1][4] = {"Coraline", "Neil Gaiman", 10, false};
 
-    catalog[2][0] = {"title11", "author1", 11, false};
-    catalog[2][1] = {"title12", "author2", 12, false};
-    catalog[2][2] = {"title13", "author3", 13, false};
-    catalog[2][3] = {"title14", "author4", 14, false};
-    catalog[2][4] = {"title15", "author5", 15, false};
+    catalog[2][0] = {"Inferno", "Dan Brown", 11, false};
+    catalog[2][1] = {"The Reversal", "Michael Connelly", 12, false};
+    catalog[2][2] = {"In The Woods", "Tana French", 13, false};
+    catalog[2][3] = {"Magpie Murders", "Anthony Horowits", 14, false};
+    catalog[2][4] = {"The Cuckoo's Calling", "Robert Galbraith", 15, false};
 
-    catalog[3][0] = {"title16", "author1", 16, false};
-    catalog[3][1] = {"title17", "author2", 17, false};
-    catalog[3][2] = {"title18", "author3", 18, false};
-    catalog[3][3] = {"title19", "author4", 19, false};
-    catalog[3][4] = {"title20", "author5", 20, false};
+    catalog[3][0] = {"Solaris", "Stanislaw Lem", 16, false};
+    catalog[3][1] = {"2001", "Arthur C. Clarke", 17, false};
+    catalog[3][2] = {"Wool", "Hugh Howey", 18, false};
+    catalog[3][3] = {"Leviathan", "Scott Westerfeld", 19, false};
+    catalog[3][4] = {"Robot", "Adam Wisniewski Snerg", 20, false};
 
-    catalog[4][0] = {"title21", "author1", 21, false};
-    catalog[4][1] = {"title22", "author2", 22, false};
-    catalog[4][2] = {"title23", "author3", 23, false};
-    catalog[4][3] = {"title24", "author4", 24, false};
-    catalog[4][4] = {"title25", "author5", 25, false};
+    catalog[4][0] = {"Eragon", "Christopher Paolini", 21, false};
+    catalog[4][1] = {"Stardust", "Neil Gaiman", 22, false};
+    catalog[4][2] = {"Uprooted", "Naomi Novik", 23, false};
+    catalog[4][3] = {"Legendbord", "Tracy Deonn", 24, false};
+    catalog[4][4] = {"Graceling", "Kristin Cashore", 25, false};
 }
 
 void displayMenu(){
@@ -127,8 +131,8 @@ int getInt(const std::string& prompt) {
 
 
 void displayCatalog(Book catalog[genresCount][bookPerGenre]){
-    const int lineWidth = 80;
-    const int titleW = 26, authorW = 18, isbnW = 12, statusW = 11;
+    const int lineWidth = 86;
+    const int titleW = 26, authorW = 24, isbnW = 12, statusW = 11;
     for(int i = 0; i < genresCount; i++){
         int inner = lineWidth - 2;
         int space = inner - genreNames[i].length();
@@ -190,7 +194,17 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& us
         std::cout << "Book not found.\n";
         }
         else if(book->isBarrowed){
-            std::cout << "Book is already barrowed.\n";
+            char choice;
+            std::cout << "Book is already borrowed.\n";
+            std::cout << "Would you like to join the waiting list? (Y/N): ";
+            std::cin >> choice;
+            if(choice == 'Y' || choice == 'y'){
+                book->waitingList.push(userId);
+                std::cout << "Added to waiting list.\n";
+                std::cout << "Queue number: " << book->waitingList.size() << std::endl;
+                user.push_back({userId, {0, 0, 0}, 0});
+            }
+            return;
         }
         else {
             book->isBarrowed = true;
@@ -212,7 +226,18 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& us
         std::cout << "Book not found.\n";
     }
     else if(book->isBarrowed){
-        std::cout << "Book is already barrowed.\n";
+        char choice;
+        std::cout << "Book is already borrowed.\n";
+        std::cout << "Would you like to join the waiting list? (Y/N): ";
+        std::cin >> choice;
+
+        if(choice == 'Y' || choice == 'y'){
+            book->waitingList.push(user[userIndex].id);
+            std::cout << "Added to waiting list.\n";
+            std::cout << book->waitingList.front();
+            std::cout << "Queue number: " << book->waitingList.size() << std::endl;
+        }
+        return;
     }
     else {
         book->isBarrowed = true;
@@ -242,6 +267,7 @@ void returnBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user
     if(book == nullptr){
         std::cout << "Book not found.\n";
     }
+
     for(int i = 0; i < user[userIndex].count; i++){
         if(user[userIndex].barrowed[i] == isbn){
             for(int j = i; j < user[userIndex].count - 1; j++){
@@ -250,8 +276,17 @@ void returnBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user
             user[userIndex].barrowed[user[userIndex].count - 1] = 0;
             user[userIndex].count--;
 
-            book->isBarrowed = false;
-            std::cout << "Book returned.\n";
+            if(!book->waitingList.empty()){
+                int nextUser = book->waitingList.front();
+                book->waitingList.pop();
+
+                std::cout << "Book returned.\n";
+                std::cout << "Book reserved for User ID: " << nextUser << std::endl;
+            }
+            else {
+                book->isBarrowed = false;
+                std::cout << "Book returned.\n";
+            }
             return;
         }
     }
