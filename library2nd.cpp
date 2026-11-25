@@ -13,7 +13,11 @@ struct Book {
     int isbn;
     bool isBarrowed;
 
+<<<<<<< HEAD
     std::queue<int> waitingList;
+=======
+     std::queue<int> waitingList;
+>>>>>>> 8c95fdd07006f0f049c992fe91b0e479760e0ab4
 };
 
 struct User {
@@ -40,6 +44,8 @@ int findUser(const std::vector<User>& user, int id);
 void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user);
 void returnBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user);
 
+void displayQueueRecords(Book catalog[genresCount][bookPerGenre]);
+
 int main(){
     Book catalog[genresCount][bookPerGenre] = {};
     std::vector<User> users;
@@ -63,6 +69,10 @@ int main(){
             case 3:
                 std::system("clear");
                 returnBook(catalog, users);
+                break;
+            case 4:
+                std::system("clear");
+                displayQueueRecords(catalog);
                 break;
             case 0:
                 std::cout << "Exiting program...\n";
@@ -112,6 +122,7 @@ void displayMenu(){
     std::cout << " [1] View catalog\n";
     std::cout << " [2] Check out book\n";
     std::cout << " [3] Return book\n";
+    std::cout << " [4] View Queue Records\n";
     std::cout << " [0] Exit\n";
 }
 
@@ -226,6 +237,7 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& us
         std::cout << "Book not found.\n";
     }
     else if(book->isBarrowed){
+<<<<<<< HEAD
         char choice;
         std::cout << "Book is already borrowed.\n";
         std::cout << "Would you like to join the waiting list? (Y/N): ";
@@ -238,6 +250,17 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& us
             std::cout << "Queue number: " << book->waitingList.size() << std::endl;
         }
         return;
+=======
+         char choice;
+    std::cout << "Book is already borrowed.\n";
+    std::cout << "Would you like to join the waiting list? (Y/N): ";
+    std::cin >> choice;
+
+    if(choice == 'Y' || choice == 'y'){
+        book->waitingList.push(user.id);
+        std::cout << "Added to waiting list.\n";
+    }
+>>>>>>> 8c95fdd07006f0f049c992fe91b0e479760e0ab4
     }
     else {
         book->isBarrowed = true;
@@ -276,11 +299,16 @@ void returnBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user
             user[userIndex].barrowed[user[userIndex].count - 1] = 0;
             user[userIndex].count--;
 
+<<<<<<< HEAD
             if(!book->waitingList.empty()){
+=======
+                if(!book->waitingList.empty()){
+>>>>>>> 8c95fdd07006f0f049c992fe91b0e479760e0ab4
                 int nextUser = book->waitingList.front();
                 book->waitingList.pop();
 
                 std::cout << "Book returned.\n";
+<<<<<<< HEAD
                 std::cout << "Book reserved for User ID: " << nextUser << std::endl;
             }
             else {
@@ -288,6 +316,52 @@ void returnBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user
                 std::cout << "Book returned.\n";
             }
             return;
+=======
+                std::cout << "Book reserved for User ID: "
+                        << nextUser << std::endl;
+                }
+                else{
+                    book->isBarrowed = false;
+                    std::cout << "Book returned and is now available.\n";
+}
+        }
+    }
+}
+
+void displayQueueRecords(Book catalog[genresCount][bookPerGenre]){
+    std::cout << "\n===== QUEUE RECORDS =====\n";
+
+    for(int i = 0; i < genresCount; i++){
+        for(int j = 0; j < bookPerGenre; j++){
+
+            if(catalog[i][j].title.empty())
+                continue;
+
+            if(!catalog[i][j].waitingList.empty()){
+
+                std::queue<int> temp =
+                    catalog[i][j].waitingList;
+
+                std::cout << "\nBook: "
+                          << catalog[i][j].title
+                          << " (ISBN: "
+                          << catalog[i][j].isbn
+                          << ")\n";
+
+                std::cout << "Waiting Users: ";
+
+                while(!temp.empty()){
+                    std::cout << temp.front();
+
+                    temp.pop();
+
+                    if(!temp.empty())
+                        std::cout << " -> ";
+                }
+
+                std::cout << std::endl;
+            }
+>>>>>>> 8c95fdd07006f0f049c992fe91b0e479760e0ab4
         }
     }
 }
