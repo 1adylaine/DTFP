@@ -35,7 +35,7 @@ void displayCatalog(Book catalog[genresCount][bookPerGenre]);
 Book* findBook(Book catalog[genresCount][bookPerGenre], int isbn);
 int findUser(const std::vector<User>& user, int id);
 void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user);
-void returnBook(Book catalog[genresCount][bookPerGenre], User& user);
+void returnBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user);
 
 int main(){
     Book catalog[genresCount][bookPerGenre] = {};
@@ -59,6 +59,7 @@ int main(){
                 break;
             case 3:
                 std::system("clear");
+                returnBook(catalog, users);
                 break;
             case 0:
                 std::cout << "Exiting program...\n";
@@ -196,6 +197,7 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& us
             std::cout << "Book checked out successfully.\n";
             user.push_back({userId, {isbn, 0, 0}, 1});
         }
+        return;
     }
 
     if(user[userIndex].count >= 3){
@@ -220,11 +222,18 @@ void checkOutBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& us
     }
 }
 
-void returnBook(Book catalog[genresCount][bookPerGenre], User& user){
+void returnBook(Book catalog[genresCount][bookPerGenre], std::vector<User>& user){
+    int userId = getInt("Enter user ID to return a book: ");
+    int userIndex = findUser(user, userId);
+
+    if(userIndex == -1){
+        std::cout << "User not found.\n";
+        return;
+    }
 
     std::cout << "Borrowed Books ISBN code: \n";
-    for(int i = 0; i < user.count; i++){
-        std::cout << i + 1 << ". " << user.barrowed[i] << std::endl;
+    for(int i = 0; i < user[userIndex].count; i++){
+        std::cout << i + 1 << ". " << user[userIndex].barrowed[i] << std::endl;
     }
 
     int isbn = getInt("\nEnter the ISBN of book you want to return: ");
@@ -233,13 +242,13 @@ void returnBook(Book catalog[genresCount][bookPerGenre], User& user){
     if(book == nullptr){
         std::cout << "Book not found.\n";
     }
-    for(int i = 0; i < user.count; i++){
-        if(user.barrowed[i] == isbn){
-            for(int j = i; j < user.count - 1; j++){
-                user.barrowed[j] = user.barrowed[j + 1];
+    for(int i = 0; i < user[userIndex].count; i++){
+        if(user[userIndex].barrowed[i] == isbn){
+            for(int j = i; j < user[userIndex].count - 1; j++){
+                user[userIndex].barrowed[j] = user[userIndex].barrowed[j + 1];
             }
-            user.barrowed[user.count - 1] = 0;
-            user.count--;
+            user[userIndex].barrowed[user[userIndex].count - 1] = 0;
+            user[userIndex].count--;
 
             book->isBarrowed = false;
             std::cout << "Book returned.\n";
