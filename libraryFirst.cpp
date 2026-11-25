@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <cstdlib>
 
 //attributes of book in struct
 const int genresCount = 5;
@@ -37,16 +38,17 @@ int main(){
     do {
         displayMenu();
         choice = getInt("Enter choice: ");
+        std::cout << std::endl;
         switch (choice) {
             case 1:
+                std::system("clear");
                 displayCatalog(catalog);
-                std::cout << "\nPress Enter to return to menu...";
-                std::cin.get();
                 break;
             case 2:
                 checkOutBook(catalog, barrowedBooks);
                 break;
             case 3:
+                std::system("clear");
                 returnBook(barrowedBooks, catalog);
                 break;
             case 0:
@@ -92,7 +94,7 @@ void sampleBook(Book catalog[genresCount][bookPerGenre]){
 }
 
 void displayMenu(){
-    std::cout << "===== LIBRARY CATALOG =====\n";
+    std::cout << "\n===== LIBRARY CATALOG =====\n";
     std::cout << " [1] View catalog\n";
     std::cout << " [2] Check out book\n";
     std::cout << " [3] Return book\n";
@@ -182,7 +184,7 @@ void returnBook(std::vector<Book>& barrowedBook, Book catalog[genresCount][bookP
             << " | " << std::setw(statusW) << b.isBarrowed << " |\n";
     }
 
-    int isbn = getInt("Enter the ISBN of book you want to return: ");
+    int isbn = getInt("\nEnter the ISBN of book you want to return: ");
 
     for (int i = 0; i < genresCount; i++) {
         for (int j = 0; j < bookPerGenre; j++) {
@@ -199,7 +201,7 @@ void returnBook(std::vector<Book>& barrowedBook, Book catalog[genresCount][bookP
         }
     }
 }
-//left on MVP of return function, no edge cases yet and uses vector.
+//Covered all basic function but no edge cases yet.
 
 /*required feature: 
     2d book storation - by shelves and 5 slot per shelves
