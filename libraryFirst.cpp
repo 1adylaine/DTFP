@@ -204,16 +204,16 @@ void returnBook(std::vector<Book>& barrowedBook, Book catalog[genresCount][bookP
 //Covered all basic function but no edge cases yet.
 
 /*required feature: 
-    2d book storation - by shelves and 5 slot per shelves
-    checking out function 
-    returning book
+    2d book storation - by shelves and 5 slot per shelves -> change to by genre
+    checking out function -> done MVP
+    returning book -> done MVP
 
     additional:
-        other than hard coded book, an add book function. 
-        search function that then has a check out as sub-function.
+        other than hard coded book, an add book function. -> aborted
+        search function that then has a check out as sub-function. 
 
     advance:
-        different types of displaying. "sorting"
+        different types of displaying. "sorting" 
 */
 
 /*To do:
